@@ -1,15 +1,30 @@
-name: 'ACTION-template'
-description: 'Boilerplate for creating a new action'
+name: "ACTION-template"
+description: "Boilerplate for creating a new action"
 
 inputs:
-  name:
-    description: 'Your name'
+  service_name:
+    description: "The name of the services"
     required: true
+  cluster_name:
+    description: "The name of the cluster"
+    required: true
+  region:
+    description: "The region of the ECS cluster"
+    required: false
+    default: "us-west-2"
+  max_retries:
+    description: "The maximum number of retries to check the service status: default is 30"
+    required: false
+    default: "30"
+  delay:
+    description: "The delay between retries in miliseconds default is 60000 (60 seconds)"
+    required: false
+    default: "60000"
 
 outputs:
-  greeting:
-    description: 'A greeting message'
+  status:
+    description: "The status of the service, either `running` or `failed`"
 
 runs:
-  using: 'node20'
-  main: 'dist/index.js'
+  using: "node20"
+  main: "dist/index.js"
