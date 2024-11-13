@@ -1,4 +1,4 @@
-name: Update README Labels
+name: Update Readme Labels
 
 on:
   pull_request:
@@ -26,7 +26,7 @@ jobs:
       BRANCH_SLUG: ${{ steps.shorten.outputs.BRANCH_SLUG }}
       REPO_NAME: ${{ steps.shorten.outputs.REPO_NAME }}
 
-  update-readme:
+  update-Readme:
     runs-on: ubuntu-latest
     needs: generate_slug
     permissions:
@@ -52,21 +52,21 @@ jobs:
           LAST_COMMIT=$(git log -1 --format=%cd --date=short)
           echo "LAST_COMMIT_DATE=$LAST_COMMIT" >> $GITHUB_ENV
 
-      - name: Update README
+      - name: Update Readme
         run: |
           # Latest Release badge
-          sed -i "s|\[!\[Latest Release\](.*)](https://github.com/aliciousness/ACTION-latest-release-badge/releases)|[![Latest Release](${{ steps.check_release.outputs.badge_url }})](https://github.com/aliciousness/ACTION-latest-release-badge/releases)|" README.md
+          sed -i "s|\[!\[Latest Release\](.*)](https://github.com/aliciousness/ACTION-latest-release-badge/releases)|[![Latest Release](${{ steps.check_release.outputs.badge_url }})](https://github.com/aliciousness/ACTION-latest-release-badge/releases)|" Readme.md
 
           # # Update Build Status badge using Shields.io for GitHub workflows
-          # sed -i "s|\[!\[Build Status\](.*)|[![Build Status](https://img.shields.io/github/actions/workflow/status/${{ github.repository }}/release.yml?branch=main)]|" README.md
+          # sed -i "s|\[!\[Build Status\](.*)|[![Build Status](https://img.shields.io/github/actions/workflow/status/${{ github.repository }}/release.yml?branch=main)]|" Readme.md
 
           # # Update Last Commit badge
-          # sed -i "s|\[!\[GitHub last commit\](.*)|[![GitHub last commit](https://img.shields.io/badge/Last%20Commit-$LAST_COMMIT_DATE-yellow)]|" README.md
+          # sed -i "s|\[!\[GitHub last commit\](.*)|[![GitHub last commit](https://img.shields.io/badge/Last%20Commit-$LAST_COMMIT_DATE-yellow)]|" Readme.md
 
       - name: Commit changes
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add README.md
-          git commit -m "Update README labels"
+          git add Readme.md
+          git commit -m "Update Readme labels"
           git push origin ${{ needs.generate_slug.outputs.BRANCH_SLUG }}
