@@ -1,0 +1,73 @@
+name: Update README Labels
+
+on:
+  pull_request:
+    branches:
+      - main
+env:
+  BUILD_ID: ${{ github.run_id }}
+jobs:
+  generate_slug:
+    runs-on: ubuntu-latest
+    environment: multi-branch
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Repo Vars
+        id: shorten
+        run: |
+          BRANCH=${GITHUB_REF_NAME}
+          BRANCH_SLUG=$(echo $BRANCH | tr '[:upper:]' '[:lower:]' | sed -e "s/feature/f/" -e "s#^story#s#" -e "s#^release#r#" -e "s/[^a-zA-Z0-9]/-/g" -e "s/--\+/-/g" | cut -c -20 | sed -e "s/[^a-zA-Z0-9]*$//")
+          echo "BRANCH_SLUG=$(echo ${BRANCH_SLUG})" >> $GITHUB_OUTPUT
+          echo "REPO_NAME=$(echo ${GITHUB_REPOSITORY#*/})" >> $GITHUB_OUTPUT
+    outputs:
+      BRANCH_SLUG: ${{ steps.shorten.outputs.BRANCH_SLUG }}
+      REPO_NAME: ${{ steps.shorten.outputs.REPO_NAME }}
+
+  update-readme:
+    runs-on: ubuntu-latest
+    needs: generate_slug
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Check latest release and get badge URL
+        uses: aliciousness/ACTION-latest-release-badge@main
+        id: check_release
+        with:
+          repo: ${{ github.repository }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: debug
+        run: echo "${{ steps.check_release.outputs.badge_url }}"
+
+      - name: Get Last Commit Date
+        id: last_commit
+        run: |
+          LAST_COMMIT=$(git log -1 --format=%cd --date=short)
+          echo "LAST_COMMIT_DATE=$LAST_COMMIT" >> $GITHUB_ENV
+
+      - name: Update README
+        run: |
+          # Latest Release badge
+          sed -i "s|\[!\[Latest Release\](.*)](https://github.com/aliciousness/ACTION-latest-release-badge/releases)|[![Latest Release](${{ steps.check_release.outputs.badge_url }})](https://github.com/aliciousness/ACTION-latest-release-badge/releases)|" README.md
+
+          # # Update Build Status badge using Shields.io for GitHub workflows
+          # sed -i "s|\[!\[Build Status\](.*)|[![Build Status](https://img.shields.io/github/actions/workflow/status/${{ github.repository }}/release.yml?branch=main)]|" README.md
+
+          # # Update Last Commit badge
+          # sed -i "s|\[!\[GitHub last commit\](.*)|[![GitHub last commit](https://img.shields.io/badge/Last%20Commit-$LAST_COMMIT_DATE-yellow)]|" README.md
+
+      - name: Commit changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git commit -m "Update README labels"
+          git push origin ${{ needs.generate_slug.outputs.BRANCH_SLUG }}
