@@ -1,8 +1,9 @@
 name: Update Readme Labels
 
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+      - main
 env:
   BUILD_ID: ${{ github.run_id }}
 jobs:
