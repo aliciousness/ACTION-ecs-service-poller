@@ -18,7 +18,7 @@ jobs:
       - name: Repo Vars
         id: shorten
         run: |
-          BRANCH_SLUG=$(echo $GITHUB_REF | sed 's/refs\/heads\///')
+          BRANCH_SLUG=$(echo "${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}" | sed 's/refs\/heads\///')
           echo "BRANCH_SLUG=$(echo ${BRANCH_SLUG})" >> $GITHUB_OUTPUT
           echo "REPO_NAME=$(echo ${GITHUB_REPOSITORY#*/})" >> $GITHUB_OUTPUT
     outputs:
@@ -55,12 +55,6 @@ jobs:
         run: |
           # Latest Release badge
           sed -i "s|\[!\[Latest Release\](.*)](https://github.com/aliciousness/ACTION-latest-release-badge/releases)|[![Latest Release](${{ steps.check_release.outputs.badge_url }})](https://github.com/aliciousness/ACTION-latest-release-badge/releases)|" Readme.md
-
-          # # Update Build Status badge using Shields.io for GitHub workflows
-          # sed -i "s|\[!\[Build Status\](.*)|[![Build Status](https://img.shields.io/github/actions/workflow/status/${{ github.repository }}/release.yml?branch=main)]|" Readme.md
-
-          # # Update Last Commit badge
-          # sed -i "s|\[!\[GitHub last commit\](.*)|[![GitHub last commit](https://img.shields.io/badge/Last%20Commit-$LAST_COMMIT_DATE-yellow)]|" Readme.md
 
       - name: Commit changes
         run: |
