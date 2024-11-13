@@ -1,4 +1,4 @@
-name: "ACTION-template"
+name: "ACTION-ecs-service-poller"
 description: "Boilerplate for creating a new action"
 
 inputs:
