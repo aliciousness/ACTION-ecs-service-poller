@@ -1,5 +1,5 @@
 name: "ACTION-ecs-service-poller"
-description: "Boilerplate for creating a new action"
+description: "A polling mechanism that checks to see if the new service is up and ready. It also checks to see if it is using the newest revision of the task def."
 
 inputs:
   service_name:
