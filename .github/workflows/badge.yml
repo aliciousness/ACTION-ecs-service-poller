@@ -19,7 +19,6 @@ jobs:
         id: shorten
         run: |
           BRANCH_SLUG=$(echo $GITHUB_REF | sed 's/refs\/heads\///')
-          BRANCH_SLUG=$(echo $BRANCH | tr '[:upper:]' '[:lower:]' | sed -e "s/feature/f/" -e "s#^story#s#" -e "s#^release#r#" -e "s/[^a-zA-Z0-9]/-/g" -e "s/--\+/-/g" | cut -c -20 | sed -e "s/[^a-zA-Z0-9]*$//")
           echo "BRANCH_SLUG=$(echo ${BRANCH_SLUG})" >> $GITHUB_OUTPUT
           echo "REPO_NAME=$(echo ${GITHUB_REPOSITORY#*/})" >> $GITHUB_OUTPUT
     outputs:
