@@ -1,5 +1,5 @@
 name: "ACTION-ecs-service-poller"
-description: "A polling mechanism that checks to see if the new service is up and ready. It also checks to see if it is using the newest revision of the task def."
+description: "A polling mechanism that checks to see if the new service is up and ready."
 
 inputs:
   service_name:
