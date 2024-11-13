@@ -11,7 +11,7 @@
     "build": "ncc build index.js -o dist",
     "prebuild": "npm run lint && npm run update-readme"
   },
-  "author": "",
+  "author": "Richard Craddock",
   "license": "ISC",
   "dependencies": {
     "@actions/core": "^1.11.1",
