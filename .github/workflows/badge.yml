@@ -34,6 +34,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Check latest release and get badge URL
         uses: aliciousness/ACTION-latest-release-badge@v1.1.0
@@ -55,6 +57,11 @@ jobs:
         run: |
           # Latest Release badge
           sed -i "s|\[!\[Latest Release\](.*)](https://github.com/aliciousness/ACTION-latest-release-badge/releases)|[![Latest Release](${{ steps.check_release.outputs.badge_url }})](https://github.com/aliciousness/ACTION-latest-release-badge/releases)|" Readme.md
+
+      - name: Set up the branch for pushing
+        run: |
+          git checkout ${{ needs.generate_slug.outputs.BRANCH_SLUG }}
+          git pull origin ${{ needs.generate_slug.outputs.BRANCH_SLUG }}  # Ensure it's up to date
 
       - name: Commit changes
         run: |
